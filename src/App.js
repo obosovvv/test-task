@@ -1,25 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import './styles/App.css';
+import {
+  RelayEnvironmentProvider,
+} from 'react-relay/hooks';
+import RelayEnvironment from './RelayEnvironment';
+import Pagination from '@material-ui/lab/Pagination';
+import * as PropTypes from 'prop-types';
+import Content from './components/content';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { makeStyles } from '@material-ui/core/styles';
+import Header from './components/header';
+const { Suspense } = React;
 
-function App() {
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    width: '100%',
+    height: '100vh',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: '0 auto',
+    '& > * + *': {
+      marginLeft: theme.spacing(2),
+    },
+  },
+}));
+
+Pagination.propTypes = { count: PropTypes.number };
+
+function AppRoot() {
+  const classes = useStyles();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <RelayEnvironmentProvider environment={RelayEnvironment}>
+      <Header />
+      <Suspense fallback={
+        <div className={classes.root}>
+          <CircularProgress />
+        </div>
+      }>
+        <Content />
+      </Suspense>
+    </RelayEnvironmentProvider>
   );
 }
 
-export default App;
+export default AppRoot;
